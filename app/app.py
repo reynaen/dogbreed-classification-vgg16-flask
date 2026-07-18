@@ -28,7 +28,7 @@ ALLOWED_EXT = {"png", "jpg", "jpeg"}
 # GANTI URL INI dengan link asli hasil upload GitHub Release kamu
 # Contoh: https://github.com/reynaen/dogbreed-classification-vgg16-flask/releases/download/v1.0/dogbreed_vgg16_final.h5
 # ============================================================
-MODEL_URL = "https://github.com/reynaen/dogbreed-classification-vgg16-flask/releases/tag/v1.0"
+MODEL_URL = "https://github.com/reynaen/dogbreed-classification-vgg16-flask/releases/download/v1.0/dogbreed_vgg16_final.h5"
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
