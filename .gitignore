@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 app/static/uploads/*
 !app/static/uploads/.gitkeep
+model/*.h5

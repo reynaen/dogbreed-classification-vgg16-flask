@@ -10,6 +10,7 @@ Lalu buka http://127.0.0.1:5000
 
 import os
 import json
+import urllib.request
 import numpy as np
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
@@ -23,15 +24,37 @@ CLASS_NAMES_PATH = os.path.join(BASE_DIR, "..", "model", "class_names.json")
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
 ALLOWED_EXT = {"png", "jpg", "jpeg"}
 
+# ============================================================
+# GANTI URL INI dengan link asli hasil upload GitHub Release kamu
+# Contoh: https://github.com/reynaen/dogbreed-classification-vgg16-flask/releases/download/v1.0/dogbreed_vgg16_final.h5
+# ============================================================
+MODEL_URL = "https://github.com/reynaen/dogbreed-classification-vgg16-flask/releases/tag/v1.0"
+
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.secret_key = "dogbreed-vgg16-secret-key"  # ganti dengan key acak saat deploy production
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
+def pastikan_model_tersedia():
+    """Download model dari GitHub Release kalau belum ada / rusak (misal cuma pointer LFS)."""
+    perlu_download = (
+        not os.path.exists(MODEL_PATH)
+        or os.path.getsize(MODEL_PATH) < 1_000_000  # kurang dari 1MB = kemungkinan pointer LFS rusak
+    )
+    if perlu_download:
+        print(f"Model tidak ditemukan / tidak valid di {MODEL_PATH}, mengunduh dari GitHub Release...")
+        os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
+        urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
+        print("Download model selesai.")
+
+
 # ============================================================
-# Load model & daftar kelas sekali saat aplikasi start
+# Siapkan & load model & daftar kelas sekali saat aplikasi start
 # ============================================================
+pastikan_model_tersedia()
+
 print("Memuat model VGG16 Dog Breed...")
 model = load_model(MODEL_PATH)
 
